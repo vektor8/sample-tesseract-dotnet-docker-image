@@ -30,8 +30,8 @@ public class WeatherForecastController : ControllerBase
         .ToArray();
     }
     
-    [HttpPost("aha")]
-    public string Getplm(IFormFile file)
+    [HttpPost("upload")]
+    public string UploadImage(IFormFile file)
     {
         var ms = new MemoryStream();
         file.CopyTo(ms);
