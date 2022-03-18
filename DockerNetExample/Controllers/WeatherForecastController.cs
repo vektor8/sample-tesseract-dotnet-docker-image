@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using Tesseract;
 namespace DockerNetExample.Controllers;
 
 [ApiController]
@@ -28,5 +28,24 @@ public class WeatherForecastController : ControllerBase
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
         })
         .ToArray();
+    }
+    
+    [HttpPost("aha")]
+    public string Getplm(IFormFile file)
+    {
+        var ms = new MemoryStream();
+        file.CopyTo(ms);
+        var fileBytes = ms.ToArray();
+        using (var engine = new TesseractEngine(@"/usr/share/tesseract-ocr/4.00/tessdata", "eng", EngineMode.Default))
+        {
+            using (var img = Pix.LoadFromMemory(fileBytes))
+            {
+                using (var page = engine.Process(img))
+                {
+                    var text = page.GetText();
+                    return text;
+                }
+            }
+        }
     }
 }
